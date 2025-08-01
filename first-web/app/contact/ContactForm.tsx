@@ -17,7 +17,7 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
 
-const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
     const { name, value } = e.target;
     setFormData(prev => ({
