@@ -1,10 +1,27 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
+
+type FormData = {
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  service: string;
+  budget: string;
+  message: string;
+  timeline: string;
+};
+
+type ContactMethod = {
+  icon: string;
+  title: string;
+  info: string;
+  description: string;
+};
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
@@ -17,8 +34,7 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
 
-const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -26,7 +42,7 @@ const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaEle
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -36,7 +52,7 @@ const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaEle
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(formData).toString()
+        body: new URLSearchParams(formData as Record<string, string>).toString()
       });
 
       if (response.ok) {
@@ -61,6 +77,33 @@ const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaEle
     setIsSubmitting(false);
   };
 
+  const contactMethods: ContactMethod[] = [
+    {
+      icon: 'ri-phone-line',
+      title: 'Phone Consultation',
+      info: '+1 (555) 123-4567',
+      description: 'Immediate response within 2 hours'
+    },
+    {
+      icon: 'ri-mail-line',
+      title: 'Email Support',
+      info: 'contact@wealthdesign.com',
+      description: 'Detailed responses within 24 hours'
+    },
+    {
+      icon: 'ri-map-pin-line',
+      title: 'Office Location',
+      info: '1250 Financial District, NYC',
+      description: 'In-person meetings by appointment'
+    },
+    {
+      icon: 'ri-calendar-line',
+      title: 'Business Hours',
+      info: 'Mon-Fri: 8AM-6PM EST',
+      description: 'Emergency support available 24/7'
+    }
+  ];
+
   return (
     <div className="py-12 md:py-24 bg-gradient-to-b from-black to-gray-900">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -80,27 +123,7 @@ const handleInputChange = ( React.ChangeEvent<HTMLInputElement | HTMLTextAreaEle
 
             {/* Contact Methods */}
             <div className="space-y-6 md:space-y-8">
-              {[{
-                icon: 'ri-phone-line',
-                title: 'Phone Consultation',
-                info: '+1 (555) 123-4567',
-                description: 'Immediate response within 2 hours'
-              }, {
-                icon: 'ri-mail-line',
-                title: 'Email Support',
-                info: 'contact@wealthdesign.com',
-                description: 'Detailed responses within 24 hours'
-              }, {
-                icon: 'ri-map-pin-line',
-                title: 'Office Location',
-                info: '1250 Financial District, NYC',
-                description: 'In-person meetings by appointment'
-              }, {
-                icon: 'ri-calendar-line',
-                title: 'Business Hours',
-                info: 'Mon-Fri: 8AM-6PM EST',
-                description: 'Emergency support available 24/7'
-              }].map((contact, index) => (
+              {contactMethods.map((contact, index) => (
                 <div key={index} className="group flex items-start space-x-4 p-4 md:p-6 bg-gradient-to-r from-gray-800/50 to-transparent rounded-lg border border-amber-400/10 hover:border-amber-400/30 transition-all duration-300">
                   <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                     <i className={`${contact.icon} text-black text-lg md:text-xl`} />
